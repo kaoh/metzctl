@@ -1,12 +1,15 @@
+import http
+import logging
+import socket
+
 import wakeonlan
 from getmac import get_mac_address
-from pip._vendor import requests
 
 PORT = 49200
 """ Port of the remote service. Actually the device and port could be resolved by a SSDP
 but the port seems to be static nowadays."""
 
-SERVICE_PATH = "/services/rcr/control/RCRService"
+SERVICE_PATH = "services/rcr/control/RCRService"
 SOAP_ACTION = "urn:metz.de:service:RCRService:1#SendKeyCode"
 
 SEND_KEY_XML = """<?xml version="1.0" encoding="utf-8"?>
@@ -29,36 +32,52 @@ KEY_CODE_MUTE = 35
 KEY_CODE_OK = 39
 
 
-class MacLookUpException(Exception):
-    """MAC could not be resolved"""
+class TvRemoteCommandException(Exception):
+    """TC remote command failed"""
     pass
 
 
 class Remote:
     """Remote access class for Metz television.
     """
-    def __init__(self, ip):
+
+    def __init__(self, ip, debug=False):
         """Constructor
 
         :param ip: The IP address of the television. The IP could be resolved by SSDP, but in case multiple
         televisions are in the network this would be not unique.
         """
         self.ip = ip
+        if debug:
+            http.client.HTTPConnection.debuglevel = 1
+            logging.basicConfig()
+            logging.getLogger().setLevel(logging.DEBUG)
+            requests_log = logging.getLogger("requests.packages.urllib3")
+            requests_log.setLevel(logging.DEBUG)
+            requests_log.propagate = True
 
-    def power_on(self):
+    def power_on(self, mac: str):
         """Powers one the television by a Wake-On-LAN packet using the MAC address.
+        :param mac The MAC address
         :return: None
         """
-        mac = get_mac_address(ip=self.ip)
-        if mac:
-            wakeonlan.create_magic_packet(mac)
-        else:
-            raise MacLookUpException()
+        wakeonlan.create_magic_packet(mac)
 
     def __send__(self, key_code: int):
         xml = SEND_KEY_XML.format(key_code)
-        requests.post(self.ip + ":" + PORT + SERVICE_PATH, data=xml, headers={"SOAPAction": SOAP_ACTION,
-                                                                              "Content-Type": 'text/xml; charset="utf-8"'})
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((self.ip, PORT))
+            command = 'POST /' + SERVICE_PATH + " HTTP/1.1" + '\r\n' \
+                      + "Host: {}:{}".format(self.ip, PORT) + "\r\n" \
+                      + "SOAPAction: \"{}\"".format(SOAP_ACTION) + "\r\n" \
+                      + 'Content-Type: text/xml; charset="utf-8"' + "\r\n" \
+                      + 'Content-Length: {}'.format(len(xml)) + "\r\n" \
+                      + 'Connection: close' + "\r\n" \
+                      + "\r\n" + xml
+            s.sendall(command.encode())
+            resp = s.recv(1024).decode("utf-8")
+            if '200 OK' not in resp:
+                raise TvRemoteCommandException()
 
     def volume_up(self):
         """Turns up the volume.
@@ -123,4 +142,9 @@ class Remote:
         """
         self.__send__(channel)
 
+    def control(self, code: int):
+        """Sends a generic code.
 
+        :return: None
+        """
+        self.__send__(code)
