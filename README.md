@@ -4,19 +4,26 @@ Metz television remote onctrol library
 
 # Usage
 
-~~~
-rom metzctl import MetzRemote
+~~~python
+from metzctl import MetzRemote
 from metzctl.remote import TvRemoteCommandException
 
-remote = Remote("192.168.178.44", debug=True)
-remote.volume_up()
+try:
+    remote = Remote("192.168.178.44", debug=True)
+    remote.volume_up()
+except TvRemoteCommandException:
+    logging.error("Error: Remote command failed")
+except OSError as e
+    logging.exception("Error: %s", str(e))
 ~~~
+
+See [command Line client](metzctl/__main__.py) for programing examples.
 
 # Development
 
 ## Local Installation
 
-    pip install
+    pip install .
     
 will take the `setup.py` and install it.
 
