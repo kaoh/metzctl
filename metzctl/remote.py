@@ -1,6 +1,7 @@
 import http
 import logging
 import socket
+from http import client
 
 import wakeonlan
 
@@ -23,10 +24,10 @@ SEND_KEY_XML = """<?xml version="1.0" encoding="utf-8"?>
  </s:Envelope>"""
 
 KEY_CODE_POWER = 11
-KEY_CODE_CH_UP = 47
+KEY_CODE_CH_UP = 46
 KEY_CODE_CH_DOWN = 47
-KEY_CODE_VOLUME_UP = 28
-KEY_CODE_VOLUME_DOWN = 27
+KEY_CODE_VOLUME_UP = 27
+KEY_CODE_VOLUME_DOWN = 28
 KEY_CODE_MUTE = 35
 KEY_CODE_OK = 39
 
@@ -48,15 +49,13 @@ class MetzRemote:
         """
         self.ip = ip
         if debug:
-            http.client.HTTPConnection.debuglevel = 1
-            logging.basicConfig()
-            logging.getLogger().setLevel(logging.DEBUG)
-            requests_log = logging.getLogger("requests.packages.urllib3")
-            requests_log.setLevel(logging.DEBUG)
-            requests_log.propagate = True
+            # TODO
+            pass
 
-    def power_on(self, mac: str):
+    @staticmethod
+    def power_on(mac: str):
         """Powers one the television by a Wake-On-LAN packet using the MAC address.
+        The must be enable in the TV settings.
         :param mac The MAC address
         :return: None
         """
@@ -65,6 +64,7 @@ class MetzRemote:
     def __send__(self, key_code: int):
         xml = SEND_KEY_XML.format(key_code)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(5000)
             s.connect((self.ip, PORT))
             command = 'POST /' + SERVICE_PATH + " HTTP/1.1" + '\r\n' \
                       + "Host: {}:{}".format(self.ip, PORT) + "\r\n" \
