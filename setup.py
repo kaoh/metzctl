@@ -14,9 +14,9 @@ setup(
     url="https://github.com/kaoh/metzctl",
     author="Karsten Ohme",
     author_email="k_o_@users.sourceforge.net",
-    license="LGPL",
+    license="LGPLv3",
     classifiers=[
-        "License :: OSI Approved :: LGPL",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
     ],
