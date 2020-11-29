@@ -22,7 +22,7 @@ except OSError as e:
     logging.exception("Error: %s", str(e))
 ~~~
 
-See [command Line client](metzctl/__main__.py) for programing examples.
+See [command line client](metzctl/__main__.py) for programing examples.
 
 # Development
 
