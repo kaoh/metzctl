@@ -2,6 +2,10 @@
 
 Metz® television remote control library
 
+# Installation
+
+    pip install metzctl
+    
 # Usage
 
 ~~~python
