@@ -3,7 +3,6 @@ import logging
 import socket
 
 import wakeonlan
-from getmac import get_mac_address
 
 PORT = 49200
 """ Port of the remote service. Actually the device and port could be resolved by a SSDP
@@ -37,7 +36,7 @@ class TvRemoteCommandException(Exception):
     pass
 
 
-class Remote:
+class MetzRemote:
     """Remote access class for Metz television.
     """
 

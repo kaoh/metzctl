@@ -1,6 +1,6 @@
 """Remote control for Metz televisions"""
 
-from .remote import Remote
+from .remote import MetzRemote
 
 __title__ = "metzctl"
 __version__ = "1.0.0"

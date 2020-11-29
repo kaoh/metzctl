@@ -5,7 +5,7 @@ Metz television remote onctrol library
 # Usage
 
 ~~~
-rom metzctl import Remote
+rom metzctl import MetzRemote
 from metzctl.remote import TvRemoteCommandException
 
 remote = Remote("192.168.178.44", debug=True)

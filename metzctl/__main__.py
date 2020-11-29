@@ -1,7 +1,7 @@
 import argparse
 import logging
 
-from metzctl import Remote
+from metzctl import MetzRemote
 from metzctl.remote import TvRemoteCommandException
 from metzctl import __doc__ as doc
 from metzctl import __title__ as title
@@ -29,7 +29,7 @@ def main():
     config.update({k: v for k, v in vars(args).items() if v is not None})
 
     try:
-        remote = Remote(args.ip, debug=args.debug)
+        remote = MetzRemote(args.ip, debug=args.debug)
         if args.key:
             for key in args.key:
                 remote.control(key)
