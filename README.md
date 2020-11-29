@@ -1,6 +1,6 @@
 # Summary
 
-Metz television remote onctrol library
+Metz® television remote control library
 
 # Usage
 
@@ -48,10 +48,17 @@ Major increment:
 bumpversion --current-version 1.1.9 major setup.py metzctl/__init__.py
 ~~~
 
+Tag + push tag:
+
+~~~
+git tag 1.0.1
+git push origin 1.0.1
+~~~
 ## Deploy
 
 ~~~
 pip install twine
+pip install wheel
 ~~~
 
 To create a source archive and a wheel for your package:
@@ -62,7 +69,9 @@ python setup.py sdist bdist_wheel
 
 ~~~
 cd dist
-tar tzf metzctl....tar.gz
+tar tzf metzctl-<version>.tar.gz
+# check the contents
+cd ..
 twine check dist/*
 twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 ~~~
