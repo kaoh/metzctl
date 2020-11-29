@@ -7,13 +7,14 @@ Metz television remote onctrol library
 ~~~python
 from metzctl import MetzRemote
 from metzctl.remote import TvRemoteCommandException
+import logging
 
 try:
-    remote = Remote("192.168.178.44", debug=True)
+    remote = MetzRemote("192.168.178.44", debug=True)
     remote.volume_up()
 except TvRemoteCommandException:
     logging.error("Error: Remote command failed")
-except OSError as e
+except OSError as e:
     logging.exception("Error: %s", str(e))
 ~~~
 
