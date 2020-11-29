@@ -60,7 +60,7 @@ class MetzRemote:
         :param mac The MAC address
         :return: None
         """
-        wakeonlan.create_magic_packet(mac)
+        wakeonlan.send_magic_packet(mac)
 
     def __send__(self, key_code: int):
         xml = SEND_KEY_XML.format(key_code)
