@@ -1,7 +1,5 @@
-import http
 import logging
 import socket
-from http import client
 
 import wakeonlan
 
